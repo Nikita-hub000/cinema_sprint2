@@ -28,6 +28,10 @@ async function proxyRequest(req, res, targetBase) {
     const target = new URL(req.originalUrl, targetBase).toString();
 
     const headers = { ...req.headers };
+    delete headers['content-length'];
+    delete headers['Content-Length'];
+    delete headers['host'];
+    delete headers['Host'];
 
     const fetchOptions = {
       method: req.method,

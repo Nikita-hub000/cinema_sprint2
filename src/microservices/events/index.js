@@ -3,6 +3,14 @@ const { Kafka } = require('kafkajs');
 
 const app = express();
 app.use(express.json());
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    console.warn('Invalid JSON payload, continuing with empty body');
+    req.body = {};
+    return next();
+  }
+  return next(err);
+});
 
 const PORT = process.env.PORT || 8082;
 const KAFKA_BROKERS = (process.env.KAFKA_BROKERS || 'kafka:9092').split(',');
