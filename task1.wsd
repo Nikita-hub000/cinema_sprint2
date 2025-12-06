@@ -1,0 +1,50 @@
+@startuml c4
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Пользователь", "Использует приложение")
+Container(outerRecService, "Outer Rec Service", "Node.js", "Управляет внешними рекомендациями")
+
+System_Boundary(house, "Cinema System") {
+    Container(mobileApp, "Mobile Application", "Swift", "Клиентское приложение")
+    Container(TVApp, "TV Application", "JS", "Клиентское приложение")
+
+    Container(webApp, "Web Application", "React", "Клиентское приложение")
+
+    Container(apiGateway, "API Gateway", "Node.js", "Маршрутизирует запросы к микросервисам и обеспечивает авторизацию")
+    
+    Container(authService, "Auth Service", "Node.js", "Отвечает за аутентификацию, refresh-токены и проверку JWT")
+    Container(userService, "User Service", "Node.js", "Управляет пользователями")
+    Container(paymentService, "Payment Service", "Node.js", "Управляет платежами, скидками и подписками пользователей")
+    Container(filmService, "Film Service", "Node.js", "Управляет фильмами, их метаданными и доступом к ним")
+
+    ContainerDb(userServiceDB, "PostgreSQL", "PostgreSQL", "Реляционные данные пользователей")
+    ContainerDb(authServiceDB, "PostgreSQL", "PostgreSQL", "Реляционные данные аутентификации")
+    ContainerDb(paymentServiceDB, "PostgreSQL", "PostgreSQL", "Реляционные данные платежей, скидок и подписок")
+    ContainerDb(filmServiceDB, "PostgreSQL", "PostgreSQL", "Реляционные данные фильмов и их метаданных")
+    Container(broker, "Kafka", "Message Broker", "Асинхронные события")
+}
+
+Rel(user, mobileApp, "Пользуется приложением")
+Rel(user, TVApp, "Пользуется приложением")
+Rel(user, webApp, "Пользуется приложением")
+
+Rel(mobileApp, apiGateway, "Отправляет запросы", "REST")
+Rel(TVApp, apiGateway, "Отправляет запросы", "REST")
+Rel(webApp, apiGateway, "Отправляет запросы", "REST")
+
+Rel(paymentService, broker, "PaymentCreated", "Kafka")
+Rel(userService, broker, "UserUpdated", "Kafka")
+Rel(filmService, broker, "MovieViewed", "Kafka")
+Rel(broker, outerRecService, "User/Movie Events", "Async")
+Rel(apiGateway, authService, "Запросы авторизации", "REST")
+Rel(apiGateway, userService, "Запросы управления пользователями", "REST")
+Rel(apiGateway, paymentService, "Запросы управления платежами", "REST")
+Rel(apiGateway, filmService, "Запросы управления фильмами", "REST")
+Rel(apiGateway, outerRecService, "Запросы внешних рекомендаций", "REST")
+
+Rel(userService, userServiceDB, "Хранит пользователей", "SQL")
+Rel(paymentService, paymentServiceDB, "Хранит платежи", "SQL")
+Rel(filmService, filmServiceDB, "Хранит фильмы", "SQL")
+Rel(authService, authServiceDB, "Хранит токены и сессии", "SQL")
+
+@enduml
