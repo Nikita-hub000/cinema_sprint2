@@ -73,6 +73,14 @@ app.all('/api/users', async (req, res) => {
   await proxyRequest(req, res, MONOLITH_URL);
 });
 
+app.all('/api/payments', async (req, res) => {
+  await proxyRequest(req, res, MONOLITH_URL);
+});
+
+app.all('/api/subscriptions', async (req, res) => {
+  await proxyRequest(req, res, MONOLITH_URL);
+});
+
 app.all('/api/movies/health', async (req, res) => {
   const target = MOVIES_SERVICE_URL;
   console.log(`Proxying ${req.method} ${req.originalUrl} -> ${target}`);
