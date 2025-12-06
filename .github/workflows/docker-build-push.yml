@@ -12,7 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAMESPACE: ${{ toLower(github.repository) }}
+  IMAGE_NAMESPACE: ${{ github.repository }}
   MONOLITH_IMAGE_NAME: ${{ env.IMAGE_NAMESPACE }}/monolith
   MOVIES_SERVICE_IMAGE_NAME: ${{ env.IMAGE_NAMESPACE }}/movies-service
   EVENTS_SERVICE_IMAGE_NAME: ${{ env.IMAGE_NAMESPACE }}/events-service
