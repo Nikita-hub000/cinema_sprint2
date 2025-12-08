@@ -162,9 +162,7 @@ jobs:
 
       - name: Run API tests (Postman)
         run: |
-          cd tests/postman
-          npm ci
-          npm run test:docker
+          docker compose run --rm tests-runner sh -lc "cd /app/tests/postman && npm ci && npm run test:docker"
 
       - name: Tear down docker compose
         if: always()
