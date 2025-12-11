@@ -121,6 +121,21 @@ services:
     networks:
       - cinemaabyss-network
 
+  tests-runner:
+    image: node:18
+    container_name: cinemaabyss-tests-runner
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      - proxy-service
+      - monolith
+      - movies-service
+      - events-service
+    networks:
+      - cinemaabyss-network
+    command: ["sleep", "infinity"]
+
   # Kafka UI for monitoring Kafka
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
